@@ -1,9 +1,26 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { ChevronRight } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { ChevronRight, User, LogOut } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const { user, isAuthenticated, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
 
   return (
     <nav className="bg-white shadow-md fixed w-full z-50">
@@ -44,6 +61,55 @@ const Navbar = () => {
             >
               Contact
             </Link>
+
+            {/* Authentication buttons/menu */}
+            {isAuthenticated ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    className="flex items-center space-x-2 h-10"
+                  >
+                    <div className="w-8 h-8 bg-safety-blue rounded-full flex items-center justify-center">
+                      <User className="w-5 h-5 text-white" />
+                    </div>
+                    <span className="text-sm font-medium">{user?.name}</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>
+                    <User className="mr-2 h-4 w-4" />
+                    <span>Profile</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <span>Orders</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <span>Settings</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleLogout}>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Log out</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <div className="flex items-center space-x-2">
+                <Link to="/login">
+                  <Button variant="ghost" className="text-sm font-medium">
+                    Sign In
+                  </Button>
+                </Link>
+                <Link to="/signup">
+                  <Button className="bg-safety-blue hover:bg-safety-darkBlue text-sm font-medium">
+                    Sign Up
+                  </Button>
+                </Link>
+              </div>
+            )}
           </div>
 
           {/* Mobile menu button */}
@@ -106,13 +172,6 @@ const Navbar = () => {
             Products
           </Link>
           <Link
-            to="/categories"
-            className="text-gray-700 hover:bg-safety-lightGray hover:text-safety-blue block px-3 py-2 text-base font-medium border-l-4 border-transparent hover:border-safety-blue"
-            onClick={() => setMenuOpen(false)}
-          >
-            Categories
-          </Link>
-          <Link
             to="/about"
             className="text-gray-700 hover:bg-safety-lightGray hover:text-safety-blue block px-3 py-2 text-base font-medium border-l-4 border-transparent hover:border-safety-blue"
             onClick={() => setMenuOpen(false)}
@@ -126,6 +185,80 @@ const Navbar = () => {
           >
             Contact
           </Link>
+
+          {/* Mobile Authentication */}
+          {isAuthenticated ? (
+            <>
+              <div className="border-t border-gray-200 pt-4 pb-3">
+                <div className="flex items-center px-4">
+                  <div className="w-10 h-10 bg-safety-blue rounded-full flex items-center justify-center">
+                    <User className="w-6 h-6 text-white" />
+                  </div>
+                  <div className="ml-3">
+                    <div className="text-base font-medium text-gray-800">
+                      {user?.name}
+                    </div>
+                    <div className="text-sm font-medium text-gray-500">
+                      {user?.email}
+                    </div>
+                  </div>
+                </div>
+                <div className="mt-3 space-y-1">
+                  <button
+                    className="text-gray-700 hover:bg-safety-lightGray hover:text-safety-blue block px-3 py-2 text-base font-medium border-l-4 border-transparent hover:border-safety-blue w-full text-left"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    Profile
+                  </button>
+                  <button
+                    className="text-gray-700 hover:bg-safety-lightGray hover:text-safety-blue block px-3 py-2 text-base font-medium border-l-4 border-transparent hover:border-safety-blue w-full text-left"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    Orders
+                  </button>
+                  <button
+                    className="text-gray-700 hover:bg-safety-lightGray hover:text-safety-blue block px-3 py-2 text-base font-medium border-l-4 border-transparent hover:border-safety-blue w-full text-left"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    Settings
+                  </button>
+                  <button
+                    className="text-red-600 hover:bg-red-50 block px-3 py-2 text-base font-medium border-l-4 border-transparent hover:border-red-600 w-full text-left"
+                    onClick={() => {
+                      handleLogout();
+                      setMenuOpen(false);
+                    }}
+                  >
+                    Log out
+                  </button>
+                </div>
+              </div>
+            </>
+          ) : (
+            <div className="border-t border-gray-200 pt-4 pb-3 px-3 space-y-2">
+              <Link
+                to="/login"
+                className="block w-full"
+                onClick={() => setMenuOpen(false)}
+              >
+                <Button
+                  variant="outline"
+                  className="w-full justify-center h-11 border-safety-blue text-safety-blue hover:bg-safety-lightGray"
+                >
+                  Sign In
+                </Button>
+              </Link>
+              <Link
+                to="/signup"
+                className="block w-full"
+                onClick={() => setMenuOpen(false)}
+              >
+                <Button className="w-full justify-center h-11 bg-safety-blue hover:bg-safety-darkBlue">
+                  Sign Up
+                </Button>
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </nav>
