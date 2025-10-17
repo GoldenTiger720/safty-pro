@@ -1,33 +1,54 @@
 
 import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { products, Product } from '../data/products';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import ProductCard from '../components/ProductCard';
 import { ChevronRight, Shield, Package, Ruler } from 'lucide-react';
+import { useCart } from '@/context/CartContext';
+import { useToast } from '@/hooks/use-toast';
 
 const ProductDetails = () => {
   const { productId } = useParams<{ productId: string }>();
+  const navigate = useNavigate();
+  const { addToCart } = useCart();
+  const { toast } = useToast();
   const [product, setProduct] = useState<Product | null>(null);
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
   const [activeTab, setActiveTab] = useState('description');
   
   useEffect(() => {
     window.scrollTo(0, 0);
-    
+
     // Find the product
     const foundProduct = products.find(p => p.id === productId) || null;
     setProduct(foundProduct);
-    
+
     // Get related products if available
     if (foundProduct && foundProduct.relatedProducts) {
-      const related = products.filter(p => 
+      const related = products.filter(p =>
         foundProduct.relatedProducts.includes(p.id)
       );
       setRelatedProducts(related);
     }
   }, [productId]);
+
+  const handleAddToCart = () => {
+    if (product) {
+      addToCart(product, 1);
+      toast({
+        title: 'Added to cart',
+        description: `${product.name} has been added to your cart.`,
+      });
+    }
+  };
+
+  const handleRequestQuote = () => {
+    if (product) {
+      navigate(`/request-quote?productId=${product.id}`);
+    }
+  };
 
   if (!product) {
     return (
@@ -104,10 +125,16 @@ const ProductDetails = () => {
             </div>
             
             <div className="flex flex-wrap gap-4">
-              <button className="flex-1 bg-safety-blue hover:bg-safety-darkBlue text-white py-3 px-6 rounded-md font-medium transition-colors duration-300">
+              <button
+                onClick={handleAddToCart}
+                className="flex-1 bg-safety-blue hover:bg-safety-darkBlue text-white py-3 px-6 rounded-md font-medium transition-colors duration-300"
+              >
                 Add to Cart
               </button>
-              <button className="flex-1 border border-safety-blue text-safety-blue hover:bg-safety-blue/5 py-3 px-6 rounded-md font-medium transition-colors duration-300">
+              <button
+                onClick={handleRequestQuote}
+                className="flex-1 border border-safety-blue text-safety-blue hover:bg-safety-blue/5 py-3 px-6 rounded-md font-medium transition-colors duration-300"
+              >
                 Request Quote
               </button>
             </div>

@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ChevronRight, User, LogOut } from "lucide-react";
+import { ChevronRight, User, LogOut, ShoppingCart } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
+import { useCart } from "@/context/CartContext";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -15,6 +16,7 @@ import {
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const { user, isAuthenticated, logout } = useAuth();
+  const { getCartCount } = useCart();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -60,6 +62,19 @@ const Navbar = () => {
               className="text-gray-700 hover:text-safety-blue px-3 py-2 text-sm font-medium"
             >
               Contact
+            </Link>
+
+            {/* Cart Icon */}
+            <Link
+              to="/cart"
+              className="relative text-gray-700 hover:text-safety-blue px-3 py-2"
+            >
+              <ShoppingCart className="w-6 h-6" />
+              {getCartCount() > 0 && (
+                <span className="absolute -top-1 -right-1 bg-safety-orange text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                  {getCartCount()}
+                </span>
+              )}
             </Link>
 
             {/* Authentication buttons/menu */}
@@ -184,6 +199,20 @@ const Navbar = () => {
             onClick={() => setMenuOpen(false)}
           >
             Contact
+          </Link>
+          <Link
+            to="/cart"
+            className="text-gray-700 hover:bg-safety-lightGray hover:text-safety-blue block px-3 py-2 text-base font-medium border-l-4 border-transparent hover:border-safety-blue"
+            onClick={() => setMenuOpen(false)}
+          >
+            <div className="flex items-center justify-between">
+              <span>Cart</span>
+              {getCartCount() > 0 && (
+                <span className="bg-safety-orange text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center">
+                  {getCartCount()}
+                </span>
+              )}
+            </div>
           </Link>
 
           {/* Mobile Authentication */}
