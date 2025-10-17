@@ -1,7 +1,8 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { products, categories } from '../data/products';
+import { categories } from '../data/products';
+import { useProducts } from '@/context/ProductContext';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import ProductCard from '../components/ProductCard';
@@ -9,26 +10,27 @@ import { ChevronRight, Grid2X2, List } from 'lucide-react';
 
 const CategoryPage = () => {
   const { categoryId } = useParams<{ categoryId: string }>();
+  const { products } = useProducts();
   const [category, setCategory] = useState<any>(null);
   const [categoryProducts, setCategoryProducts] = useState<any[]>([]);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-  
+
   useEffect(() => {
     window.scrollTo(0, 0);
-    
+
     // Find the category
     const foundCategory = categories.find(c => c.id === categoryId);
     setCategory(foundCategory);
-    
+
     // Get products in this category
     if (foundCategory) {
-      const filtered = products.filter(p => 
-        p.category.toLowerCase() === foundCategory.name.toLowerCase() || 
+      const filtered = products.filter(p =>
+        p.category.toLowerCase() === foundCategory.name.toLowerCase() ||
         p.category.toLowerCase().includes(foundCategory.name.toLowerCase())
       );
       setCategoryProducts(filtered);
     }
-  }, [categoryId]);
+  }, [categoryId, products]);
 
   if (!category) {
     return (

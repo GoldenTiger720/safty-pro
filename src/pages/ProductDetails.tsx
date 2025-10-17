@@ -1,7 +1,8 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { products, Product } from '../data/products';
+import { Product } from '../data/products';
+import { useProducts } from '@/context/ProductContext';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import ProductCard from '../components/ProductCard';
@@ -12,17 +13,18 @@ import { useToast } from '@/hooks/use-toast';
 const ProductDetails = () => {
   const { productId } = useParams<{ productId: string }>();
   const navigate = useNavigate();
+  const { products, getProductById } = useProducts();
   const { addToCart } = useCart();
   const { toast } = useToast();
   const [product, setProduct] = useState<Product | null>(null);
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
   const [activeTab, setActiveTab] = useState('description');
-  
+
   useEffect(() => {
     window.scrollTo(0, 0);
 
     // Find the product
-    const foundProduct = products.find(p => p.id === productId) || null;
+    const foundProduct = getProductById(productId || '') || null;
     setProduct(foundProduct);
 
     // Get related products if available
@@ -32,7 +34,7 @@ const ProductDetails = () => {
       );
       setRelatedProducts(related);
     }
-  }, [productId]);
+  }, [productId, products, getProductById]);
 
   const handleAddToCart = () => {
     if (product) {

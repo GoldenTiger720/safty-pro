@@ -6,10 +6,12 @@ import FeaturedCategories from "../components/FeaturedCategories";
 import NewsletterSignup from "../components/NewsletterSignup";
 import Footer from "../components/Footer";
 import ProductCard from "../components/ProductCard";
-import { products } from "../data/products";
+import { useProducts } from "@/context/ProductContext";
 import FeaturedProductSections from "../components/FeaturedProductSections";
 
 const Index = () => {
+  const { products } = useProducts();
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);

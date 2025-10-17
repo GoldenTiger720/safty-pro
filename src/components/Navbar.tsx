@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ChevronRight, User, LogOut, ShoppingCart } from "lucide-react";
+import { ChevronRight, User, LogOut, ShoppingCart, Package } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useCart } from "@/context/CartContext";
 import { Button } from "@/components/ui/button";
@@ -100,6 +100,10 @@ const Navbar = () => {
                   </DropdownMenuItem>
                   <DropdownMenuItem>
                     <span>Orders</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate("/manage-products")}>
+                    <Package className="mr-2 h-4 w-4" />
+                    <span>Manage Products</span>
                   </DropdownMenuItem>
                   <DropdownMenuItem>
                     <span>Settings</span>
@@ -244,6 +248,15 @@ const Navbar = () => {
                     onClick={() => setMenuOpen(false)}
                   >
                     Orders
+                  </button>
+                  <button
+                    className="text-gray-700 hover:bg-safety-lightGray hover:text-safety-blue block px-3 py-2 text-base font-medium border-l-4 border-transparent hover:border-safety-blue w-full text-left"
+                    onClick={() => {
+                      navigate("/manage-products");
+                      setMenuOpen(false);
+                    }}
+                  >
+                    Manage Products
                   </button>
                   <button
                     className="text-gray-700 hover:bg-safety-lightGray hover:text-safety-blue block px-3 py-2 text-base font-medium border-l-4 border-transparent hover:border-safety-blue w-full text-left"

@@ -2,15 +2,17 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { Card, CardContent } from './ui/card';
-import { products } from '../data/products';
+import { useProducts } from '@/context/ProductContext';
 
 const FeaturedProductSections = () => {
+  const { products } = useProducts();
+
   // Get most popular products (first 5)
   const popularProducts = products.slice(0, 5);
-  
+
   // Get new arrivals (next 4)
   const newArrivals = products.slice(5, 9);
-  
+
   // Get deals (next 2)
   const deals = products.slice(9, 11);
   

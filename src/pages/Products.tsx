@@ -1,7 +1,8 @@
 
 import { useState, useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
-import { products, categories } from '../data/products';
+import { categories } from '../data/products';
+import { useProducts } from '@/context/ProductContext';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import ProductCard from '../components/ProductCard';
@@ -15,16 +16,17 @@ import {
 } from "@/components/ui/select";
 
 const Products = () => {
+  const { products } = useProducts();
   const [searchParams] = useSearchParams();
   const searchTerm = searchParams.get('search') || '';
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const [filteredProducts, setFilteredProducts] = useState(products);
   const [selectedCategory, setSelectedCategory] = useState<any>(null);
-  
+
   useEffect(() => {
     window.scrollTo(0, 0);
-    
+
     // Filter products based on search term and category
     let filtered = [...products];
     
@@ -46,7 +48,7 @@ const Products = () => {
     }
     
     setFilteredProducts(filtered);
-  }, [searchTerm, categoryFilter]);
+  }, [searchTerm, categoryFilter, products]);
 
   const uniqueCategories = Array.from(new Set(products.map(p => p.category)));
 
